@@ -1,18 +1,23 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Next.js",
-  description:
-    "Beautifully designed components built with Radix UI and Tailwind CSS.",
+  name: "Verified Contributor" as const,
+  description: "Your NFT as contributor to the Openmesh ecosystem." as const,
   mainNav: [
     {
       title: "Home",
       href: "/",
     },
+    {
+      title: "Leaderboard",
+      href: "/leaderboard",
+    },
+    {
+      title: "Apply",
+      href: "/apply",
+    },
   ],
   links: {
-    twitter: "https://twitter.com/shadcn",
-    github: "https://github.com/shadcn/ui",
-    docs: "https://ui.shadcn.com",
+    openrd: "https://openrd.plopmenz.com/",
   },
 }

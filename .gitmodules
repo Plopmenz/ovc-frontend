@@ -1,0 +1,3 @@
+[submodule "ovc-indexer"]
+	path = ovc-indexer
+	url = https://github.com/Plopmenz/ovc-indexer
