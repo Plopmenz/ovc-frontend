@@ -5,6 +5,16 @@ import { LeaderboardReturn } from "@/ovc-indexer/api/return-types"
 import { reviver } from "@/ovc-indexer/openrd-indexer/utils/json"
 import axios from "axios"
 
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
+
 export function Leaderboard() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardReturn>([])
 
@@ -21,23 +31,23 @@ export function Leaderboard() {
   }, [])
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>Position</th>
-          <th>Token Id</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Position</TableHead>
+          <TableHead>Verified Contributor</TableHead>
+          <TableHead>Score</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
         {leaderboard.map((item, position) => (
-          <tr>
-            <td>#{position + 1}</td>
-            <td>{item.tokenId.toString()}</td>
-            <td>{item.score}</td>
-          </tr>
+          <TableRow key={position}>
+            <TableCell className="font-medium">#{position + 1}</TableCell>
+            <TableCell>{item.tokenId.toString()}</TableCell>
+            <TableCell>{item.score}</TableCell>
+          </TableRow>
         ))}
-      </tbody>
-    </table>
+      </TableBody>
+    </Table>
   )
 }

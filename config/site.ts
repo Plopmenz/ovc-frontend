@@ -1,8 +1,8 @@
 export type SiteConfig = typeof siteConfig
 
 export const siteConfig = {
-  name: "Verified Contributor" as const,
-  description: "Your NFT as contributor to the Openmesh ecosystem." as const,
+  name: "Verified Contributor",
+  description: "Your NFT as contributor to the Openmesh ecosystem.",
   mainNav: [
     {
       title: "Home",
@@ -13,6 +13,10 @@ export const siteConfig = {
       href: "/leaderboard",
     },
     {
+      title: "Departments",
+      href: "/departments",
+    },
+    {
       title: "Apply",
       href: "/apply",
     },
@@ -20,4 +24,4 @@ export const siteConfig = {
   links: {
     openrd: "https://openrd.plopmenz.com/",
   },
-}
+} as const
