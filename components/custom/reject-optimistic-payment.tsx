@@ -37,12 +37,12 @@ const formSchema = z.object({
 
 export function RejectOptimisticPayment({
   dao,
-  hash,
+  role,
   requestId,
   refresh,
 }: {
   dao: Address
-  hash: bigint
+  role: bigint
   requestId: number
   refresh: () => Promise<void>
 }) {
@@ -126,7 +126,7 @@ export function RejectOptimisticPayment({
           abi: VerifiedContributorTagTrustlessManagementContract.abi,
           address: VerifiedContributorTagTrustlessManagementContract.address,
           functionName: "asDAO",
-          args: [dao, hash, [trustlessAction], BigInt(0)],
+          args: [dao, role, [trustlessAction], BigInt(0)],
         })
         .catch((err) => {
           console.error(err)

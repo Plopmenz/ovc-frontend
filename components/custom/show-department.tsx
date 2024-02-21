@@ -1,12 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { OptimisticPaymentsReturn } from "@/ovc-indexer/api/return-types"
+import {
+  DAORoleReturn,
+  OptimisticPaymentsReturn,
+} from "@/ovc-indexer/api/return-types"
 import { ObjectFilter } from "@/ovc-indexer/openrd-indexer/api/filter"
 import { FilterTasksReturn } from "@/ovc-indexer/openrd-indexer/api/return-types"
 import { replacer, reviver } from "@/ovc-indexer/openrd-indexer/utils/json"
 import axios from "axios"
-import { Address, checksumAddress, keccak256, toBytes } from "viem"
+import { Address, checksumAddress } from "viem"
 
 import { useDAOMetadata } from "@/hooks/useDAOMetadata"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -17,7 +20,19 @@ import { defaultChain } from "./web3-provider"
 
 export function ShowDepartment({ dao }: { dao: Address }) {
   const metadata = useDAOMetadata(dao)
-  const hash = BigInt(keccak256(toBytes("SMARTCONTRACTS")))
+  const [daoRole, setDAORole] = useState<DAORoleReturn>({ role: BigInt(0) })
+  useEffect(() => {
+    const getDAORole = async () => {
+      const response = await axios.get(`/indexer/daoRole/${dao}`)
+      if (response.status !== 200) {
+        throw new Error(`Fetching dao role error: ${response.data}`)
+      }
+      const role = JSON.parse(JSON.stringify(response.data), reviver)
+      setDAORole(role)
+    }
+
+    getDAORole().catch(console.error)
+  }, [dao])
 
   const [tasks, setTasks] = useState<FilterTasksReturn>([])
   useEffect(() => {
@@ -80,7 +95,7 @@ export function ShowDepartment({ dao }: { dao: Address }) {
                 key={i}
                 chainId={task.chainId}
                 taskId={task.taskId}
-                hash={hash}
+                role={daoRole.role}
                 refresh={refresh}
               />
             )
@@ -94,7 +109,7 @@ export function ShowDepartment({ dao }: { dao: Address }) {
                 <ShowPayment
                   key={i}
                   requestId={requestId}
-                  hash={hash}
+                  role={daoRole.role}
                   payment={optimisticPayments[requestId]}
                   dao={dao}
                   refresh={refresh}

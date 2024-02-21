@@ -52,13 +52,13 @@ const formSchema = z.object({
 
 export function CreateOptimisticPayment({
   dao,
-  hash,
+  role,
   taskId,
   task,
   refresh,
 }: {
   dao: Address
-  hash: bigint
+  role: bigint
   taskId: bigint
   task?: Task
   refresh: () => Promise<void>
@@ -219,7 +219,7 @@ export function CreateOptimisticPayment({
           abi: VerifiedContributorTagTrustlessManagementContract.abi,
           address: VerifiedContributorTagTrustlessManagementContract.address,
           functionName: "asDAO",
-          args: [dao, hash, [trustlessAction], BigInt(0)],
+          args: [dao, role, [trustlessAction], BigInt(0)],
         })
         .catch((err) => {
           console.error(err)

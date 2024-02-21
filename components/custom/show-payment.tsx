@@ -1,9 +1,12 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { OptimisticPaymentsDecimals } from "@/contracts/OptimisticActionsManagement"
+import { VerifiedContributorTagTrustlessManagementContract } from "@/contracts/VerifiedContributorTagTrustlessManagement"
 import { OptimisticPayment } from "@/ovc-indexer/types/optimistic-payment"
 import { Address, formatUnits } from "viem"
+import { useAccount, usePublicClient } from "wagmi"
 
 import { siteConfig } from "@/config/site"
 import { Badge } from "@/components/ui/badge"
@@ -32,17 +35,40 @@ interface ShowRejectionMetadata {
 
 export function ShowPayment({
   requestId,
-  hash,
+  role,
   payment,
   dao,
   refresh,
 }: {
   requestId: number
-  hash: bigint
+  role: bigint
   payment: OptimisticPayment
   dao: Address
   refresh: () => Promise<void>
 }) {
+  const account = useAccount()
+  const publicClient = usePublicClient()
+
+  const [hasRole, setHasRole] = useState<boolean>(false)
+  useEffect(() => {
+    const getHasRole = async () => {
+      if (!publicClient || !account.address) {
+        setHasRole(false)
+        return
+      }
+
+      const accountHasRole = await publicClient.readContract({
+        abi: VerifiedContributorTagTrustlessManagementContract.abi,
+        address: VerifiedContributorTagTrustlessManagementContract.address,
+        functionName: "hasRole",
+        args: [account.address, role],
+      })
+      setHasRole(accountHasRole)
+    }
+
+    getHasRole().catch(console.error)
+  }, [publicClient, account.address, role])
+
   const indexedMetadata = payment?.cachedMetadata
     ? (JSON.parse(payment?.cachedMetadata) as ShowPaymentMetadata)
     : undefined
@@ -146,7 +172,7 @@ export function ShowPayment({
             )}
           </div>
         )}
-        {!payment.rejected && !payment.executed && (
+        {hasRole && !payment.rejected && !payment.executed && (
           <div className="grid grid-cols-1 gap-y-3">
             {payment.executableFrom <
             Math.round(new Date().getTime() / 1000) ? (
@@ -164,7 +190,7 @@ export function ShowPayment({
             <Separator />
             <RejectOptimisticPayment
               dao={dao}
-              hash={hash}
+              role={role}
               requestId={requestId}
               refresh={refresh}
             />
