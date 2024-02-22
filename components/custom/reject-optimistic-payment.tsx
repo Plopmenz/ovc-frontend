@@ -238,7 +238,7 @@ export function RejectOptimisticPayment({
             </FormItem>
           )}
         />
-        <Button type="submit" disabled={submitting}>
+        <Button variant="destructive" type="submit" disabled={submitting}>
           Reject Payment Request
         </Button>
       </form>

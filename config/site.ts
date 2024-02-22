@@ -17,6 +17,10 @@ export const siteConfig = {
       href: "/departments",
     },
     {
+      title: "Staking",
+      href: "/staking",
+    },
+    {
       title: "Apply",
       href: "/apply",
     },
